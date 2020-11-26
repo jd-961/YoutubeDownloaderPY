@@ -28,7 +28,7 @@ class YoutubeDownloader:
                 puts(colored.green(f"Done Downloading - {ytInitialize.title} (360p)\n"))
 
         except:
-            print('Something is wrong with the youtube video.')
+            puts(colored.red('Something is wrong with the youtube video.'))
 
 
 
@@ -37,13 +37,18 @@ class YoutubeDownloader:
         try:
             downloadPATH = './YoutubeMP3/'
             ytInitialize = YouTube(url)
-            puts(colored.green(f'Downloading: {ytInitialize.title} (AUDIO ONLY)'))
-            ytStreams = ytInitialize.streams.filter(only_audio=True)[0]
-            ytStreams.download(downloadPATH)
-            time.sleep(0.5)
-            puts(colored.green(f'Done Downlading - {ytInitialize.title} (AUDIO ONLY)\n'))
+            ytStreams = ytInitialize.streams.filter(only_audio=True)
+            if len(ytStreams) > 0:
+                puts(colored.green(f'Downloading: {ytInitialize.title} (AUDIO ONLY)'))
+                ytStreams = ytInitialize.streams.filter(only_audio=True)[0]
+                ytStreams.download(downloadPATH)
+                time.sleep(0.5)
+                puts(colored.green(f'Done Downlading - {ytInitialize.title} (AUDIO ONLY)\n'))
+            else:
+                puts(colored.red(f'Somewhat we can\'t parse the video ({ytInitialize.title})'))
+
         except:
-            print('Something is wrong with the youtube video.')
+            puts(colored.red('Something is wrong with the youtube video.'))
 
 
 
@@ -59,6 +64,7 @@ if __name__ == "__main__":
         os.mkdir('YoutubeMP4')
 
     download = YoutubeDownloader()
+    keyEnter = 'https://www.youtube.com/watch?v='
     
     while(True):
         puts(colored.magenta("""\
@@ -74,7 +80,6 @@ if __name__ == "__main__":
 
             if inp == 1:
                 while(True):
-                    keyEnter = 'https://www.youtube.com/watch?v='
                     puts(colored.magenta('Enter the youtube link you would like to download.'))
                     puts(colored.magenta("Enter \"exit\" without \"\" to go back to menu."))
                     inpMP4 = input('> ')
@@ -88,19 +93,23 @@ if __name__ == "__main__":
 
             if inp == 2:
                 while(True):
-                    puts(colored.magenta('Enter the youtube you would like to download.'))
-                    puts(colored.magenta('Enter "exit" without " " to go back to menu.'))
+                    puts(colored.magenta('Enter the youtube link you would like to download.'))
+                    puts(colored.magenta("Enter \"exit\" without \"\" to go back to menu."))
                     inpMP3 = input('> ')
                     if inpMP3.startswith(keyEnter):
                         download.mp3Download(inpMP3)
-
-                    if inpMP3 == "exit":
+                    
+                    if inpMP3 == 'exit':
+                        puts(colored.green('Going back to menu.\n'))
                         break
                     
                     if not inpMP3.startswith(keyEnter):
                         puts(colored.red('Enter a valid youtube url.\n'))
 
             if inp == 3:
+                puts(colored.green('Quitting.'))
+                time.sleep(0.5)
                 break
+
         except:
             puts(colored.red('Enter integer only'))
